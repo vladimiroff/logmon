@@ -50,5 +50,5 @@ func (l *Line) UnmarshalText(text []byte) error {
 }
 
 func unmarshalError(step string, err error) error {
-	return fmt.Errorf("clf: cannot unmarshal %s: %s", step, err)
+	return fmt.Errorf("cannot unmarshal %s: %s", step, err)
 }
