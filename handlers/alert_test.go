@@ -31,8 +31,6 @@ var (
 func TestTrafficAlerts(t *testing.T) {
 
 	ta := NewTrafficAlerter(5)
-	defer ta.Stop()
-
 	for _, c := range taCases {
 		t.Run(fmt.Sprintf("%t of %d inputs", c.alert, c.inputs), func(t *testing.T) {
 			out := make(chan string)

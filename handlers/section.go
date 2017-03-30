@@ -54,8 +54,6 @@ func (s *SectionCounter) loop() {
 			s.process(line)
 		case out = <-s.cycle:
 			s.sum(out)
-		case <-s.stop:
-			return
 		}
 	}
 }

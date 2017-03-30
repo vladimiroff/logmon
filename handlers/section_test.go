@@ -51,11 +51,9 @@ func equal(a, b []string) bool {
 }
 
 func TestSections(t *testing.T) {
-
 	for _, c := range scCases {
 		t.Run(fmt.Sprintf("best %d of %d", len(c.best), len(c.all)), func(t *testing.T) {
 			s := NewSections()
-			defer s.Stop()
 			out := make(chan string)
 
 			for _, name := range c.all {
@@ -79,11 +77,6 @@ func TestSections(t *testing.T) {
 					continue
 				}
 
-				if i > len(c.best) {
-					fmt.Printf("c.best = %+v\n", c.best)
-					fmt.Printf("i = %d\n", i)
-					fmt.Printf("lines = %s\n", lines)
-				}
 				expected := fmt.Sprintf(sectionsFormat, c.best[i-1],
 					dups(c.all, c.best[i-1]), 0)
 				if line+"\n" != expected {

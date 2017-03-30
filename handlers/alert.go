@@ -34,8 +34,6 @@ func (ta *TrafficAlerter) loop() {
 			ta.count++
 		case out := <-ta.cycle:
 			ta.sum(out)
-		case <-ta.stop:
-			return
 		}
 	}
 }
