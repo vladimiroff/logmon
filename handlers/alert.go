@@ -1,10 +1,6 @@
 package handlers
 
-import (
-	"fmt"
-
-	"github.com/vladimiroff/logmon/clf"
-)
+import "fmt"
 
 const (
 	triggerAlertFormat = "High traffic generated an alert - hits = %d, triggered at %s"
@@ -14,10 +10,9 @@ const (
 // TrafficAlerter counts handled requests and fires an alert when going above
 // given threshold.
 type TrafficAlerter struct {
+	*Handler
+
 	count     uint64
-	input     chan clf.Line
-	cycle     chan chan string
-	stop      chan struct{}
 	threshold uint64
 	alert     bool
 }
@@ -25,9 +20,7 @@ type TrafficAlerter struct {
 // NewTrafficAlerter creates new traffic alerter and starts its loop.
 func NewTrafficAlerter(threshold uint64) *TrafficAlerter {
 	ta := TrafficAlerter{
-		input:     make(chan clf.Line),
-		cycle:     make(chan chan string),
-		stop:      make(chan struct{}),
+		Handler:   NewHandler(),
 		threshold: threshold,
 	}
 	go ta.loop()
@@ -45,23 +38,6 @@ func (ta *TrafficAlerter) loop() {
 			return
 		}
 	}
-}
-
-// Input returns a channel for handling new lines.
-func (ta *TrafficAlerter) Input() chan<- clf.Line {
-	return ta.input
-}
-
-// Sum returns a channel for requesting summaries.
-func (ta *TrafficAlerter) Sum() chan<- chan string {
-	return ta.cycle
-}
-
-// Stop the alerter's loop.
-//
-// NOTE: Stopping a stopped alerter will panic.
-func (ta *TrafficAlerter) Stop() {
-	close(ta.stop)
 }
 
 func (ta *TrafficAlerter) sum(out chan string) {

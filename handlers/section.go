@@ -25,22 +25,18 @@ type Section struct {
 
 // SectionCounter counts all visited sections and reports most visited of them.
 type SectionCounter struct {
-	all   map[string]Section
-	best  []string
-	input chan clf.Line
-	cycle chan chan string
-	stop  chan struct{}
+	*Handler
+
+	all  map[string]Section
+	best []string
 }
 
 // NewSections creates new handler for rating sections and starts its loop.
 func NewSections() *SectionCounter {
 	s := SectionCounter{
-		input: make(chan clf.Line),
-		cycle: make(chan chan string),
-		stop:  make(chan struct{}),
-
-		all:  make(map[string]Section),
-		best: make([]string, 0),
+		Handler: NewHandler(),
+		all:     make(map[string]Section),
+		best:    make([]string, 0),
 	}
 	go s.loop()
 	return &s
@@ -64,11 +60,6 @@ func (s *SectionCounter) loop() {
 	}
 }
 
-// Input returns a channel for handling new lines.
-func (s *SectionCounter) Input() chan<- clf.Line {
-	return s.input
-}
-
 func (s *SectionCounter) process(l clf.Line) {
 	name := l.Resource
 	section := s.all[name]
@@ -86,16 +77,6 @@ func (s *SectionCounter) process(l clf.Line) {
 			s.best = append(s.best, name)
 		}
 	}
-}
-
-// Sum returns a channel for requesting summaries.
-func (s *SectionCounter) Sum() chan<- chan string {
-	return s.cycle
-}
-
-// Stop the sections's loop.
-func (s *SectionCounter) Stop() {
-	close(s.stop)
 }
 
 func (s *SectionCounter) sum(out chan string) {
