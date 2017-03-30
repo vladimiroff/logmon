@@ -7,6 +7,7 @@ Simple console tool for monitoring CLF-formatted HTTP access log.
     go get github.com/vladimiroff/logmon/...
     cd $GOPATH/src/github.com/vladimiroff/logmon
     dep ensure
+    go install github.com/vladimiroff/logmon/cmd/logmon
 
 ## Usage
 
